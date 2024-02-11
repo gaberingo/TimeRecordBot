@@ -13,6 +13,24 @@ logging.basicConfig(
 )
 
 
+def check_database(tele_id, command=None):
+    today = date.today()
+    cnx = dbCRUD.connect_to_db()
+    if not cnx:
+        return False, "I could not connect to the database."
+    if not dbCRUD.check_member_exists(cnx, tele_id):
+        return False, "You need to register first.\n /register to regist, then try again"
+    if command is not None:
+        exist_record = dbCRUD.check_record_set(cnx, tele_id, today, command)
+        if exist_record:
+            return False, f"{command} is already recorded"
+    if not dbCRUD.today_record_was_created(cnx, tele_id, today):
+        dbCRUD.insert_record_time(cnx, tele_id, today)
+        return cnx, "Created record for %(today)s" % {"today": today}
+
+    return cnx, None
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Hello, i'm Telegram Bot")
 
@@ -43,37 +61,123 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_in(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    today = date.today()
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx = dbCRUD.connect_to_db()
-    if not cnx:
-        return await context.bot.send_message(chat_id=chat_id, text="I could not connect to the database.")
-    if not dbCRUD.check_member_exists(cnx, tele_id):
-        await context.bot.send_message(
-            chat_id=chat_id,
-            text="You need to register first.\n "
-                 "/register to regist, then try again"
+    cnx, msg = check_database(tele_id, "check_in")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Checking in: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            check_in=time
         )
-        return
-    exist_record = dbCRUD.check_record_set(cnx, tele_id, today, 'check_in')
-    if exist_record:
-        await context.bot.send_message(chat_id=chat_id, text=f"Check in is already recorded at {exist_record}")
-        return
-    if not dbCRUD.today_record_was_created(cnx, tele_id, today):
-        await context.bot.send_message(
-            chat_id=chat_id,
-            text="Created record for %s" % today
-        )
-        dbCRUD.insert_record_time(cnx, tele_id, today)
-    dbCRUD.update_record_time(
-        cnx,
-        tele_id,
-        today,
-        check_in=datetime.now().time().strftime("%H:%M:%S")
-    )
-    cnx.close()
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
 
+
+async def break_out1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id, "break_out1")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Breaking out 1: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            break_out1=time
+        )
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+
+
+async def break_in1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id, "break_in1")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Breaking In 1: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            break_in1=time
+        )
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+
+
+async def break_out2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id, "break_out2")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Breaking out 2: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            break_out2=time
+        )
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+
+
+async def break_in2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id, "break_in2")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Breaking In 2: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            break_in2=time
+        )
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+
+
+async def check_out(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id, "check_out")
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        await context.bot.send_message(chat_id=chat_id, text=f"Check out: {time}")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            check_out=time
+        )
+        cnx.close()
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+
+
+async def show_data_today(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    tele_id = update.effective_user.id
+    cnx, msg = check_database(tele_id)
+    if cnx:
+        data_today = dbCRUD.show_data_today(cnx, tele_id, date.today())
+        await context.bot.send_message(chat_id=chat_id, text=str(data_today))
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+    cnx.close()
 
 async def remove_exist_job(chat_id: str, context: ContextTypes.DEFAULT_TYPE):
     """Remove job with Chat Id. Returns whether job was removed"""
@@ -119,5 +223,11 @@ if __name__ == "__main__":
     bot.add_handler(CommandHandler("unset", unset))
     bot.add_handler(CommandHandler("register", register))
     bot.add_handler(CommandHandler("check_in", check_in))
+    bot.add_handler(CommandHandler("break_out1", break_out1))
+    bot.add_handler(CommandHandler("break_in1", break_in1))
+    bot.add_handler(CommandHandler("break_out2", break_out2))
+    bot.add_handler(CommandHandler("break_in2", break_in2))
+    bot.add_handler(CommandHandler("check_out", check_out))
+    bot.add_handler(CommandHandler("show_today", show_data_today))
     bot.add_handler(start_handler)
     bot.run_polling(allowed_updates=Update.ALL_TYPES)
