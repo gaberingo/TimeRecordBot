@@ -106,10 +106,10 @@ def today_record_was_created(cnx, tele_id, today_date):
     cursor.execute(sql, vals)
     exists = cursor.fetchone()
     cursor.close()
-    if exists != (None,):
-        return True
-    else:
+    if exists == None or exists == (None,):
         return False
+    else:
+        return True
 
 
 def update_record_time(cnx, tele_id, date_now, **kwargs):
@@ -143,10 +143,10 @@ def check_record_set(cnx, tele_id, date_now, col_name):
         cursor.execute(sql, vals)
         record = cursor.fetchone()
         cursor.close()
-        if record != (None,):
-            return True
-        else:
+        if record == None or record == (None,):
             return False
+        else:
+            return True
     else:
         return False
 
