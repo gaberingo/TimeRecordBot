@@ -30,6 +30,20 @@ def check_database(tele_id, command=None):
 
     return cnx, None
 
+def update_record(tele_id, cmd):
+    cnx, msg = check_database(tele_id, cmd)
+    if cnx:
+        time = datetime.now().time().strftime("%H:%M:%S")
+        dbCRUD.update_record_time(
+            cnx,
+            tele_id,
+            date.today(),
+            **{cmd:time}
+        )
+        cnx.close()
+        return True, f"{cmd} : {time}"
+    else:
+        return False, msg
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Hello, i'm Telegram Bot")
@@ -61,112 +75,50 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def check_in(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "check_in")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Checking in: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            check_in=time
-        )
-        cnx.close()
-        return
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
-        return
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 async def break_out1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "break_out1")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Breaking out 1: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            break_out1=time
-        )
-        cnx.close()
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 
 async def break_in1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "break_in1")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Breaking In 1: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            break_in1=time
-        )
-        cnx.close()
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 
 async def break_out2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "break_out2")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Breaking out 2: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            break_out2=time
-        )
-        cnx.close()
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 
 async def break_in2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "break_in2")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Breaking In 2: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            break_in2=time
-        )
-        cnx.close()
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 
 async def check_out(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    cmd = update.effective_message.text[1:]
     chat_id = update.effective_chat.id
     tele_id = update.effective_user.id
-    cnx, msg = check_database(tele_id, "check_out")
-    if cnx:
-        time = datetime.now().time().strftime("%H:%M:%S")
-        await context.bot.send_message(chat_id=chat_id, text=f"Check out: {time}")
-        dbCRUD.update_record_time(
-            cnx,
-            tele_id,
-            date.today(),
-            check_out=time
-        )
-        cnx.close()
-    else:
-        await context.bot.send_message(chat_id=chat_id, text=msg)
+    update, msg = update_record(tele_id, cmd)
+    await context.bot.send_message(chat_id=chat_id, text=msg)
 
 
 async def show_data_today(update: Update, context: ContextTypes.DEFAULT_TYPE):
