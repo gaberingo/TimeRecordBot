@@ -153,7 +153,7 @@ def check_record_set(cnx, tele_id, date_now, col_name):
 
 def show_data_today(cnx, tele_id, date_now):
     cursor = cnx.cursor()
-    sql = (f"SELECT * FROM time_record WHERE teleId = %s AND date_now = %s")
+    sql = (f"SELECT date_now, check_in, break_out1, break_in1, break_out2, break_in2, check_out FROM time_record WHERE teleId = %s AND date_now = %s")
     vals = (str(tele_id), date_now)
     cursor.execute(sql, vals)
     record = cursor.fetchone()

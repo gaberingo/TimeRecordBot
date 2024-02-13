@@ -74,9 +74,10 @@ async def check_in(update: Update, context: ContextTypes.DEFAULT_TYPE):
             check_in=time
         )
         cnx.close()
+        return
     else:
         await context.bot.send_message(chat_id=chat_id, text=msg)
-
+        return
 
 async def break_out1(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -174,7 +175,18 @@ async def show_data_today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cnx, msg = check_database(tele_id)
     if cnx:
         data_today = dbCRUD.show_data_today(cnx, tele_id, date.today())
-        await context.bot.send_message(chat_id=chat_id, text=str(data_today))
+        text_msg = ""
+        labels = ["Hari ini", "Check In", "Break Out1", "Break In1", "Break Out2", "Break In2", "Check Out"]
+        # Membuat perulangan untuk setiap elemen data dan label
+        for label, item in zip(labels, data_today):
+            if type(item) == datetime.date:
+                formatted_item = item.strftime("%d %B %Y")
+            elif type(item) == timedelta:
+                formatted_item = str(item)
+            else:
+                formatted_item = str(item)
+            text_msg += (f"{label}: {formatted_item}\n")
+        await context.bot.send_message(chat_id=chat_id, text=text_msg)
     else:
         await context.bot.send_message(chat_id=chat_id, text=msg)
     cnx.close()
